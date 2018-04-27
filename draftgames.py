@@ -8,14 +8,14 @@ try:
 except:
     raise RuntimeError("Could not load Database!")
     
-#base_player = {
-#   "NAME": "filler", 
-#   "player_ID": "1234", 
-#   "ELO":1500, 
-#   "HEROS": {"KREEPY":0, "DOC":0, "SARGE":0}, #Needs completing
-#   "GAMES": {"WINS": 0, "LOSES": 0, "LEFT": 0},
-#   "CLAN": "",
-#}
+base_player = {
+    "NAME": "filler", 
+    "player_ID": "-1", 
+    "ELO":1500,
+    "HEROS": {"KREEPY":0, "DOC":0, "SARGE":0}, #Needs completing
+    "GAMES": {"WINS": 0, "LOSES": 0, "LEFT": 0, "TOTAL":0,},
+    "CLAN": "",
+}
         
 def calc_new_elo(self, player_elo, team_1_elo, team_A_elo, score, k):
     """Calculates the new elo of the player"""
@@ -37,10 +37,16 @@ def get_players():
                 player_name = input("For Team A, Enter player {0} name! ".format(x))
             else:
                 player_name = input("For Team 1, Enter player {0} name! ".format(x))
+                
             player = db.users.find_one({"NAME":player_name})
             if player is None:
                 print("Warning! No user found with that name")
                 valid = False
+                continue
+            if "y" in input("Did the player leave early? ").lower():
+                add_loss(player)
+                add_left(player)
+                player = base_player 
                 
         players.append({x:player})
         
@@ -93,35 +99,23 @@ def add_player(name:str, player_id:str, elo:int=1500, clan:str=""):
 def add_win(player):
     db.users.update_one(
         {'_id': player['_id']},
-        {'$inc': {"GAMES.WINS":1}},
+        {'$inc': {"GAMES.WINS":1, "GAMES.TOTAL":1}},
         upsert=True
     )
     
 def add_loss(player):
     db.users.update(
         {'_id': player['_id']},
-        {'$inc': {"GAMES.WINS":-1}},
+        {'$inc': {"GAMES.WINS":-1, "GAMES.TOTAL":1}},
         upsert=True
     )
-                
-try:
-    from pymongo import MongoClient
-except:
-    raise RuntimeError("You do not have the right modules installed")
-try:
-    client = MongoClient()
-    db = client["draftgames-db"]
-except:
-    raise RuntimeError("Could not load Database!")
     
-#base_player = {
-#   "NAME": "filler", 
-#   "player_ID": "1234", 
-#   "ELO":1500, 
-#   "HEROS": {"KREEPY":0, "DOC":0, "SARGE":0}, #Needs completing
-#   "GAMES": {"WINS": 0, "LOSES": 0, "LEFT": 0},
-#   "CLAN": "",
-#}
+def add_left(player):
+    db.users.update(
+        {'_id': player['_id']},
+        {'$inc': {"GAMES.LEFT":1}},
+        upsert=True
+    )
 
 def get_all():
     return db.users.find_all({}).sort("ELO", pymongo.ASCENDING)
@@ -133,7 +127,7 @@ def display():
     print("--------------------------------------------------------\n")
     for player in players:
         print(str(player["NAME"]).ljust(15), 
-              str(player["MMR"]).ljust(8), 
+              str(player["ELO"]).ljust(8), 
               str(sum([value for x in player["GAMES"].values])).ljust(8), 
               str(player["GAMES"]["WINS"]).ljust(8), 
               str(nplayer["GAMES"]["LOSES"]).ljust(8))
