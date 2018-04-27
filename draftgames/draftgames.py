@@ -22,7 +22,7 @@ base_player = {
     "CLAN": "",
 }
 
-class bnl_mmr:
+class draftgames:
 	def __init__(self,bot):
 		self.bot=bot
 
@@ -172,4 +172,5 @@ async def get_input(ctx, msg:str, time_out:int=120):
 	return await self.bot.wait_for_message(author=ctx.message.author, timeouy=120, channel=ctx.message.channel)
 
 def setup(bot):
-	this_cog = BNLMMR(bot)
+	this_cog = draftgames(bot)
+	bot.add_cog(this_cog)
