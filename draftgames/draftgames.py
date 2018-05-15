@@ -46,14 +46,14 @@ class draftgames:
                 add_left(player)
                 player = base_player 
         	    
-            players.append({x:player})
+            players.append(player)
                     
             if x>5: team_A_elo += player["ELO"] 
             else: team_1_elo += player["ELO"]
     
         #get average
-        self.team_A_elo /= 5
-        self.team_1_elo /= 5
+        team_A_elo /= 5
+        team_1_elo /= 5
                 
         valid = False
         attempts = 0
@@ -71,9 +71,9 @@ class draftgames:
                 return
 
             #update PLayers
-            self.update(players, score)
+            self.update(players, score, team_A_elo, team_1_elo)
             
-    def update(self, players, score):
+    def update(self, players, score, teamA, team1):
         for num, player in enumerate(players):
             if player["player_id"] == "-1":
                 continue
@@ -138,8 +138,41 @@ class draftgames:
 
     @commands.command(pass_context=True)
     async def creatematch(self):
-	"""Creates a match"""
-	pass
+        """Creates a match"""
+        teamA = []
+        team1 = []
+        players = []
+        #MMR_total = 0
+        #MMR_target = 0
+        
+        for x in range(10):
+            if x>5:
+                player_name = await self.get_input(ctx, "For Team A, Enter player {0} name! ".format(x))
+            else:
+                player_name = await self.get_input(ctx, "For Team 1, Enter player {0} name! ".format(x))
+            
+            player = db.users.find_one({"NAME":player_name.content})
+            if player is None:
+                await self.bot.say("Warning! No player called that, restarting...")
+                return
+        	    
+            players.append(player)
+            M#MR_total += player["ELO"]
+            
+        #MMR_target = MMR_total//2 #Get the sum of ELO we are aiming for
+        
+        def get_elo(player): #used as key in sort
+            return player["ELO"]
+        
+        players.sort(key=get_elo, reverse=True)
+        
+        for number, player in enumerate(players):
+            if number % 2 == 0:
+                teamA.append(player)
+            else:
+                team1.append(player)
+            
+        
 
               
 def add_win(player):
