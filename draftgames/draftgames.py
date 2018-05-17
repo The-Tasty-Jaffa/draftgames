@@ -137,7 +137,7 @@ class draftgames:
         return await self.bot.wait_for_message(author=ctx.message.author, timeout=time_out, channel=ctx.message.channel)
 
     @commands.command(pass_context=True)
-    async def creatematch(self):
+    async def creatematch(self, ctx):
         """Creates a match"""
         teamA = []
         team1 = []
