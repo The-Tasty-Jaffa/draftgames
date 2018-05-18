@@ -41,7 +41,7 @@ class draftgames:
                 return
             
             responce = await self.get_input(ctx, "Did the player leave early? ")
-            if responce is not None and "y" in responce.lower():
+            if responce is not None and "y" in responce.content.lower():
                 add_loss(player)
                 add_left(player)
                 player = base_player 
@@ -61,7 +61,7 @@ class draftgames:
             score = await get_input(ctx, "Who won? __**(1 if Team 1 won 0 otherwise)?**__ ")
             attempts += 1
             try:
-                if score is not None: int(score)
+                if score is not None: int(score.content)
                 else: return
             except:
                 await self.bot.say("That is not a number! ")		
@@ -171,8 +171,15 @@ class draftgames:
                 teamA.append(player)
             else:
                 team1.append(player)
-            
         
+	for num, player in enumerate(players):
+	    if num == 0:
+		await self.bot.say("For team 1: We have...")
+	    if num == 5:
+		await self.bot.say("For team A: we have...")
+		
+	    await self.bot.say(player["NAME"])
+		
 
               
 def add_win(player):
