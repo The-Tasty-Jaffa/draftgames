@@ -29,6 +29,8 @@ class draftgames:
     @checks.mod_or_permissions(manage_channels=True, manage_roles=True)
     async def match(self, ctx):
         """Updates the MMR"""
+	players = []
+	
         for x in range(10):
             if x>5:
                 player_name = await self.get_input(ctx, "For Team A, Enter player {0} name! ".format(x))
