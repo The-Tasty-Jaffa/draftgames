@@ -40,8 +40,8 @@ class draftgames:
                 await self.bot.say("Warning! No player called that, restarting...")
                 return
             
-            responce = await self.get_input(ctx, "Did the player leave early? ").lower()
-            if responce is not None and "y" in responce:
+            responce = await self.get_input(ctx, "Did the player leave early? ")
+            if responce is not None and "y" in responce.lower():
                 add_loss(player)
                 add_left(player)
                 player = base_player 
@@ -157,7 +157,7 @@ class draftgames:
                 return
         	    
             players.append(player)
-            M#MR_total += player["ELO"]
+            #MMR_total += player["ELO"]
             
         #MMR_target = MMR_total//2 #Get the sum of ELO we are aiming for
         
