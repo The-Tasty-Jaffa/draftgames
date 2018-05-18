@@ -171,14 +171,14 @@ class draftgames:
                 teamA.append(player)
             else:
                 team1.append(player)
-        
-	for num, player in enumerate(players):
-	    if num == 0:
-		await self.bot.say("For team 1: We have...")
-	    if num == 5:
-		await self.bot.say("For team A: we have...")
 		
-	    await self.bot.say(player["NAME"])
+        for num, player in enumerate(players):
+            if num == 0:
+                await self.bot.say("For team 1: We have...")
+            if num == 5:
+                await self.bot.say("For team A: we have...")
+		
+            await self.bot.say(player["NAME"])
 		
 
               
