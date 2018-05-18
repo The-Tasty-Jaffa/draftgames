@@ -30,6 +30,8 @@ class draftgames:
     async def match(self, ctx):
         """Updates the MMR"""
         players = []
+	team_1_elo = 0
+	team_A_elo = 0
 	
         for x in range(10):
             if x>5:
