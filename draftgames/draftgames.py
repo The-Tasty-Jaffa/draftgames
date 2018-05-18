@@ -29,7 +29,7 @@ class draftgames:
     @checks.mod_or_permissions(manage_channels=True, manage_roles=True)
     async def match(self, ctx):
         """Updates the MMR"""
-	players = []
+        players = []
 	
         for x in range(10):
             if x>5:
